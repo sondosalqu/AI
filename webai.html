@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>system</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="ai.css" />
+   <script src="ai.js" defer></script>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gidole&family=Mozilla+Headline:wght@200..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+
+<div class="div1"> 
+    <div class="div5">
+
+    <div class="div2" id="a">
+ 
+
+
+   <label class="p1">Number of Cities </label>
+   <input type="number" min="1" class="t"  placeholder="Enter number of cities" >
+
+  </div>
+
+  <div class="div2" id="b">
+   <label class="p1">Temperature (°C):</label>
+  <input type="number" id="temp" class="t" placeholder="e.g., 25">
+
+
+ 
+  <label>Humidity (%):</label>
+  <input type="number" id="humidity" class="t" placeholder="e.g., 60">
+  
+  <label>Wind Speed (km/h):</label>
+  <input type="number" id="wind" class="t" placeholder="e.g., 15">
+</div>
+
+<div class="div2" id="c">
+  <label>Initial Temperature:</label>
+  <input type="number" id="initTemp" class="t"  placeholder="e.g., 1000">
+
+  <label>Cooling Rate (α):</label>
+  <input type="number" step="0.001" id="coolRate" class="t"  placeholder="e.g., 0.995">
+
+  <label>Penalty for Unsafe City:</label>
+  <input type="number" id="penalty" class="t"  placeholder="e.g., 50">
+
+
+</div>
+   
+
+<div class="div2" id="d">
+ <button class="i " id="trainBtn">Train Perceptron</button>
+  <button class="i " id="predictBtn">Predict Safe/Unsafe Cities</button>
+  <button class="i " id="saBtn">Run Simulated Annealing</button>
+  <button class="i " id="resetBtn">Reset</button>
+</div>
+
+<div class="div2" id="x"  >
+ <button id="trainBtn" class="i " class="next">next</button>
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+    <div class="div3">
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
