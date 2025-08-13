@@ -5,7 +5,8 @@
     <title>system</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <link rel="stylesheet" href="ai.css" />
-   <script src="ai.js" defer></script>
+   <script src="aii.js" defer></script>
+
  <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gidole&family=Mozilla+Headline:wght@200..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -21,7 +22,7 @@
 
 
    <label class="p1">Number of Cities </label>
-   <input type="number" min="1" class="t"  placeholder="Enter number of cities" >
+   <input type="number" min="1" class="t" id="g"  placeholder="Enter number of cities" >
 
   </div>
 
@@ -50,7 +51,7 @@
 
 
 </div>
-   
+
 
 <div class="div2" id="d">
  <button class="i " id="trainBtn">Train Perceptron</button>
@@ -75,6 +76,7 @@
 
 
     <div class="div3">
+      <canvas id="mapCanvas" width="600" height="400" style="border:1px solid #000;"></canvas>
 
     </div>
 
@@ -89,13 +91,6 @@
 
 
 </div>
-
-
-
-
-
-
-
 
 
 
