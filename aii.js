@@ -61,7 +61,7 @@ function drawRandomRoute() {
 
 
 
-// nextBtn.addEventListener("click", function () {
+
 //         if (currentStep === 0) {
 //            numCities = parseInt(document.getElementById("g").value);
 //                cities =[];
