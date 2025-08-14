@@ -3,12 +3,16 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentStep = 0;
      let cindex=0;
     let numCities = 0;
+    let ftotalcost=0
     let cities =[];
-
+    let route =[];
+let initialTemp=0;
+let coolingRate=0;
 
 
     const nextBtn = document.querySelector("#x button");
     const nextContainer = document.getElementById("x");
+     const saBtn = document.getElementById("saBtn");
    
      
 function showStep(index) {
@@ -40,109 +44,9 @@ function showStep(index) {
     }
 
 
-function drawRandomRoute() {
-        const canvas = document.getElementById("mapCanvas");
-        const ctx = canvas.getContext("2d");
-
-        let route = [...Array(numCities).keys()];
-        route.sort(() => Math.random() - 0.5);
-
-        ctx.beginPath();
-        ctx.moveTo(cities[route[0]].x, cities[route[0]].y);
-        for (let i = 1; i < route.length; i++) {
-            ctx.lineTo(cities[route[i]].x, cities[route[i]].y);
-        }
-        ctx.lineTo(cities[route[0]].x, cities[route[0]].y);
-        ctx.strokeStyle = "blue";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    }
 
 
 
-
-
-//         if (currentStep === 0) {
-//            numCities = parseInt(document.getElementById("g").value);
-//                cities =[];
-
-//             for (let i = 0; i < numCities; i++) {
-//   cities.push({
-//     id: i + 1,
-//     x: Math.random()*600, 
-//     y: Math.random()*400, 
-//     isSafe: null ,
-//     Temperature:null,
-//     Humidity:null,
-//     Speed:null,
-//     Initial: null,
-//     Rate:null,
-//     Penalty:null
-//   });
-
-
-// }
-//  currentStep = 1;
-//   showStep(currentStep);
-//         }
-
-// let i=0;
-// if (currentStep==1){
-// while(i< numCities){
-// showStep(currentStep);
-
-// cities[i].Temperature = parseFloat(document.getElementById("temp").value);
-// cities[i].Humidity = parseFloat(document.getElementById("humidity").value);
-// cities[i].Speed = parseFloat(document.getElementById("wind").value);
-// i++;
-
-// }
-
-
-
-
- 
-
-
-
-// }
-
-
-
-
-
-
-// currentStep=2;
-// let z=0;
-// if (currentStep==2){
-
-// while(z<numCities){
-
-// cities[z].Initial = parseFloat(document.getElementById("initTemp").value);
-// cities[z].Rate = parseFloat(document.getElementById("coolRate").value);
-// cities[z].Penalty = parseFloat(document.getElementById("penalty").value);
-// z++;
-// showStep(currentStep);
-// }
-
-
- 
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//     });
 
 nextBtn.addEventListener("click", function () {
     if (currentStep === 0) {
@@ -153,13 +57,11 @@ nextBtn.addEventListener("click", function () {
                 id: i + 1,
                 x: Math.random() * 600,
                 y: Math.random() * 400,
-                isSafe: null,
+                isSafe: 1,
                 Temperature: null,
                 Humidity: null,
                 Speed: null,
-                Initial: null,
-                Rate: null,
-                Penalty: null
+                
             });
         }
         currentStep = 1;
@@ -179,20 +81,19 @@ nextBtn.addEventListener("click", function () {
     } 
     else if (currentStep === 2) {
        
-        cities[cindex].Initial = parseFloat(document.getElementById("initTemp").value);
-        cities[cindex].Rate = parseFloat(document.getElementById("coolRate").value);
-        cities[cindex].Penalty = parseFloat(document.getElementById("penalty").value);
+        initialTemp = parseFloat(document.getElementById("initTemp").value);
+        coolingRate = parseFloat(document.getElementById("coolRate").value);
         
-        cindex++;
-        if (cindex >= numCities) {
+        
+        
             currentStep = 3; 
             
     drawCities();
- drawRandomRoute()
+ drawRandomRoute();
    
         }
         showStep(currentStep);
-    }
+    
 
 
  
@@ -206,7 +107,145 @@ nextBtn.addEventListener("click", function () {
 
 
 
+function calculateCityDistance(city1, city2, penalty) {
+    let distance = Math.sqrt(Math.pow(city2.x - city1.x, 2) + Math.pow(city2.y - city1.y, 2));
+
+  
+    if (city1.isSafe === 1 || city2.isSafe === 1) {
+        distance += penalty;
+    }
+    
+    return distance;
+}
+
+
+function calculateRouteCost(route) {
+    let totalCost = 0;
+    const penalty = 50;
+    
+    for (let i = 0; i < route.length; i++) {
+        const currentCity = cities[route[i]];
+        const nextCity = cities[route[(i + 1) % route.length]];
+        let segmentCost = calculateCityDistance(currentCity, nextCity, penalty);
+        
+        totalCost += segmentCost;
+    }
+    
+    return totalCost;
+}
+
+saBtn.addEventListener("click", function () {
+       if (cities.length === 0) {
+        alert("Please create cities first");
+        return;
+    }
+
+    let currentRoute = [...route];
+    let bestRoute = [...route];
+    let bestCost = calculateRouteCost(route);
+    let temperature = initialTemp;
+       if (initialTemp <= 0 || coolingRate <= 0 || coolingRate >= 1) {
+        alert("Please enter valid values:\nInitial Temperature > 0\n0 < Cooling Rate < 1");
+        return;
+    }
+    
+    for (let iter = 0; iter < 1000; iter++) {
+        const newRoute = [...currentRoute];
+        const i = Math.floor(Math.random() * cities.length);
+        const j = Math.floor(Math.random() * cities.length);
+        [newRoute[i], newRoute[j]] = [newRoute[j], newRoute[i]];
+        
+        const newCost = calculateRouteCost(newRoute);
+        const costDifference = newCost - calculateRouteCost(currentRoute);
+        
+        if (costDifference < 0 || Math.random() < Math.exp(-costDifference / temperature)) {
+            currentRoute = [...newRoute];
+            
+            if (newCost < bestCost) {
+                bestRoute = [...newRoute];
+                bestCost = newCost;
+            }
+        }
+        
+        temperature *= coolingRate;
+    }
+    
+    
+    drawCities();
+    drawOptimizedRoute(bestRoute);
+    
+   
+    const ctx = document.getElementById("mapCanvas").getContext("2d");
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText(`Optimized Cost: ${bestCost.toFixed(2)}`, 20, 30);
+});
 
 
 
+
+function drawRandomRoute() {
+    const canvas = document.getElementById("mapCanvas");
+    const ctx = canvas.getContext("2d");
+    const penalty = 50;
+    
+    route = [...Array(numCities).keys()];
+    route.sort(() => Math.random() - 0.5);
+    ftotalcost = 0; 
+
+    ctx.beginPath();
+    ctx.moveTo(cities[route[0]].x, cities[route[0]].y);
+    
+    for (let i = 0; i < route.length; i++) {
+        const nextIndex = (i + 1) % route.length;
+        const currentCity = cities[route[i]];
+        const nextCity = cities[route[nextIndex]];
+    
+        ctx.lineTo(nextCity.x, nextCity.y);
+        const midX = (currentCity.x + nextCity.x) / 2;
+        const midY = (currentCity.y + nextCity.y) / 2;
+        const distance = calculateCityDistance(currentCity, nextCity, penalty);
+        ftotalcost += distance;
+        
+        ctx.font = "9px Arial";
+        ctx.fillStyle = "gray";
+        ctx.fillText(distance.toFixed(2), midX, midY);
+    }
+    
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+     ctx.font = "16px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText(`Initial Cost: ${ftotalcost.toFixed(2)}`, 20, 30);
+}
+
+function drawOptimizedRoute(route) {
+    const canvas = document.getElementById("mapCanvas");
+    const ctx = canvas.getContext("2d");
+    const penalty = 50;
+
+    ctx.beginPath();
+    ctx.moveTo(cities[route[0]].x, cities[route[0]].y);
+    
+    for (let i = 0; i < route.length; i++) {
+        const nextIndex = (i + 1) % route.length;
+        const currentCity = cities[route[i]];
+        const nextCity = cities[route[nextIndex]];
+        
+        ctx.lineTo(nextCity.x, nextCity.y);
+        
+        const midX = (currentCity.x + nextCity.x) / 2;
+        const midY = (currentCity.y + nextCity.y) / 2;
+        const distance = calculateCityDistance(currentCity, nextCity, penalty);
+        
+        ctx.font = "9px Arial";
+        ctx.fillStyle = "green";
+        ctx.fillText(distance.toFixed(2), midX, midY);
+    }
+    
+    ctx.strokeStyle = "green";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+}
 });
