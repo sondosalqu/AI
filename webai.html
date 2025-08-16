@@ -28,20 +28,20 @@
 
   <div class="div2" id="b">
    <label class="p1">Temperature (°C):</label>
-  <input type="number" id="temp" class="t" placeholder="e.g., 25">
+  <input type="number" id="temp" class="t" placeholder="e.g., 25" step="any">
 
 
  
   <label>Humidity (%):</label>
-  <input type="number" id="humidity" class="t" placeholder="e.g., 60">
+  <input type="number" id="humidity" class="t" placeholder="e.g., 60" step="any">
   
   <label>Wind Speed (km/h):</label>
-  <input type="number" id="wind" class="t" placeholder="e.g., 15">
+  <input type="number" id="wind" class="t" placeholder="e.g., 15" step="any">
 </div>
 
 <div class="div2" id="c">
   <label>Initial Temperature:</label>
-  <input type="number" id="initTemp" class="t"  placeholder="e.g., 1000">
+  <input type="number" id="initTemp" class="t"  placeholder="e.g., 1000" >
 
   <label>Cooling Rate (α):</label>
   <input type="number" step="0.001" id="coolRate" class="t"  placeholder="e.g., 0.995">
@@ -49,28 +49,21 @@
  
 
 </div>
-
-
 <div class="div2" id="d">
  <button class="i " id="trainBtn">Train Perceptron</button>
   <button class="i " id="predictBtn">Predict Safe/Unsafe Cities</button>
   <button class="i " id="saBtn">Run Simulated Annealing</button>
-  <button class="i " id="resetBtn">Reset</button>
+ 
 </div>
 
 <div class="div2" id="x"  >
- <button id="trainBtn" class="i " class="next">next</button>
+ <button id="next" class="i " class="next">next</button>
 
+ 
 </div>
 
 
-
-
-
-
 </div>
-
-
 
 
     <div class="div3">
@@ -78,29 +71,7 @@
 
     </div>
 
-
-
-
-
-
-
-
-
-
-
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </body>

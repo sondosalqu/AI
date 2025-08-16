@@ -1,15 +1,22 @@
+
+   let numCities = 0;
+    let cities =[];
+
 document.addEventListener("DOMContentLoaded", function () {
     const steps = ["a", "b", "c", "d"];
     let currentStep = 0;
      let cindex=0;
-    let numCities = 0;
+
     let ftotalcost=0
-    let cities =[];
+
+
     let route =[];
 let initialTemp=0;
 let coolingRate=0;
 
 
+
+ 
     const nextBtn = document.querySelector("#x button");
     const nextContainer = document.getElementById("x");
      const saBtn = document.getElementById("saBtn");
@@ -27,24 +34,6 @@ function showStep(index) {
     }
 
   
-      function drawCities() {
-        const canvas = document.getElementById("mapCanvas");
-        const ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        cities.forEach(city => {
-            ctx.beginPath();
-            ctx.arc(city.x, city.y, 6, 0, Math.PI * 2);
-            ctx.fillStyle = "gray";
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = "black";
-            ctx.fillText(city.id, city.x + 8, city.y - 8);
-        });
-    }
-
-
-
 
 
 
@@ -57,7 +46,7 @@ nextBtn.addEventListener("click", function () {
                 id: i + 1,
                 x: Math.random() * 600,
                 y: Math.random() * 400,
-                isSafe: 1,
+                isSafe: null,
                 Temperature: null,
                 Humidity: null,
                 Speed: null,
@@ -102,6 +91,15 @@ nextBtn.addEventListener("click", function () {
 
 
   showStep(currentStep);
+
+
+
+
+
+
+
+
+
 
 
 
@@ -184,6 +182,9 @@ saBtn.addEventListener("click", function () {
 
 
 
+
+
+
 function drawRandomRoute() {
     const canvas = document.getElementById("mapCanvas");
     const ctx = canvas.getContext("2d");
@@ -249,3 +250,86 @@ function drawOptimizedRoute(route) {
     ctx.stroke();
 }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let model;
+fetch("model.json")
+  .then(res => res.json())
+  .then(data => {
+    model = data;
+    console.log("Model loaded:", model);
+  });
+
+  function predict(inputs) {
+  let activation = inputs.reduce((sum, x, i) => sum + x * model.weights[i], model.bias);
+  return activation >= 0 ? 1 : 0;
+}
+
+
+
+function normalizeInput(inputs, mins, maxs) {
+  return inputs.map((val, i) => {
+    const range = maxs[i] - mins[i];
+    return range === 0 ? 0 : (val - mins[i]) / range;
+  });
+}
+
+document.getElementById("predictBtn").addEventListener("click", () => {
+  if (!model) {
+    alert("Model not loaded yet!");
+    return;
+  }
+  cities.forEach(city => {
+    let inputs = [city.Temperature, city.Humidity, city.Speed];
+    let normInputs = normalizeInput(inputs, model.mins, model.maxs); 
+    let pred = predict(normInputs);
+    city.isSafe = (pred === 0);
+  });
+  drawCities();
+});
+
+
+      function drawCities() {
+        const canvas = document.getElementById("mapCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        cities.forEach(city => {
+            ctx.beginPath();
+
+            ctx.arc(city.x, city.y, 6, 0, Math.PI * 2);
+            if(city.isSafe===null){
+                   ctx.fillStyle = "gray";
+            }
+            else if(city.isSafe){
+                  ctx.fillStyle = "green";
+            }
+            else{
+                  ctx.fillStyle = "red";
+            }
+            
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = "black";
+            ctx.fillText(city.id, city.x + 8, city.y - 8);
+        });
+    }
+
+
+
+
+
+
+
