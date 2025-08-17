@@ -129,6 +129,9 @@ console.log("Model saved to model.json");
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
+
+
+
 function askOnce() {
   rl.question("Temperature: ", (t) => {
     rl.question("Humidity: ", (h) => {
