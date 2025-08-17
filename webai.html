@@ -63,12 +63,27 @@
  <button class="i " id="trainBtn">Train Perceptron</button>
   <button class="i " id="predictBtn">Predict Safe/Unsafe Cities</button>
   <button class="i " id="saBtn">Run Simulated Annealing</button>
- 
+ <button class="i " id="showTableBtn">Show Weather Data</button>
 </div>
 
 <div class="div2" id="x"  >
  <button id="next" class="i " class="next">next</button>
-
+<dialog id="cityDialog">
+  <h3>City Weather & Prediction</h3>
+  <table border="1" id="cityTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Temperature (°C)</th>
+        <th>Humidity (%)</th>
+        <th>Wind (km/h)</th>
+        <th>Prediction</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <button id="closeDialog">Close</button>
+</dialog>
  
 </div>
 

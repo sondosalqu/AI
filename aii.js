@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const steps = ["a","r","b", "c", "d"];
     let currentStep = 0;
      let cindex=0;
-
+let costMatrix;
     let ftotalcost=0
 
 
@@ -96,7 +96,7 @@ nextBtn.addEventListener("click", function () {
             
     drawCities();
  drawRandomRoute();
-   
+    costMatrix = buildCostMatrix();
         }
         showStep(currentStep);
     
@@ -126,7 +126,7 @@ function calculateCityDistance(city1, city2, penalty) {
     let distance = Math.sqrt(Math.pow(city2.x - city1.x, 2) + Math.pow(city2.y - city1.y, 2));
 
   
-    if (city1.isSafe === 1 || city2.isSafe === 1) {
+    if ( city2.isSafe === 1) {
         distance += penalty;
     }
     
@@ -234,6 +234,29 @@ function drawRandomRoute() {
    // ctx.fillText(`Initial Cost: ${ftotalcost.toFixed(2)}`, 20, 30);
 }
 
+
+function buildCostMatrix() {
+    const penalty = 50;
+    let costMatrix = Array(numCities).fill(null).map(() => Array(numCities).fill(0));
+
+    for (let i = 0; i < numCities; i++) {
+        for (let j = 0; j < numCities; j++) {
+            if (i === j) {
+                costMatrix[i][j] = 0;
+            } else {
+                costMatrix[i][j] = calculateCityDistance(cities[i], cities[j], penalty);
+            }
+        }
+    }
+    return costMatrix;
+}
+
+
+
+
+
+
+
 function drawOptimizedRoute(route) {
     const canvas = document.getElementById("mapCanvas");
     const ctx = canvas.getContext("2d");
@@ -257,9 +280,7 @@ function drawOptimizedRoute(route) {
         totalCost += distance;
         
      
-        if (currentCity.isSafe === false || nextCity.isSafe === false) {
-            penaltyCost += 50;
-        }
+      
         
         ctx.font = "9px Arial";
         ctx.fillStyle = "green";
@@ -359,6 +380,43 @@ document.getElementById("predictBtn").addEventListener("click", () => {
 
 
 
+function updateTable() {
+const tableBody = document.querySelector("#cityTable tbody");
+
+  tableBody.innerHTML = ""; 
+  cities.forEach(city=>{
+
+        const row = document.createElement("tr");
+
+row.innerHTML = `
+      <td>${city.id}</td>
+      <td>${city.Temperature ?? "-"}</td>
+      <td>${city.Humidity ?? "-"}</td>
+      <td>${city.Speed ?? "-"}</td>
+      <td style="color:${city.isSafe === null ? "gray" : city.isSafe ? "green" : "red"}">
+        ${city.isSafe === null ? "Not Predicted" : (city.isSafe ? "Safe" : "Unsafe")}
+      </td>
+    `;
+    tableBody.appendChild(row);
+
+  }
+
+  );
 
 
+}
 
+document.getElementById("showTableBtn").addEventListener("click", () => {
+  updateTable();
+  
+  document.getElementById("cityDialog").showModal();
+}
+);
+
+document.getElementById("closeDialog").addEventListener("click", () => {
+  
+    document.getElementById("cityDialog").close();
+
+
+}
+);
